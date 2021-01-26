@@ -28,7 +28,21 @@ const createArticle = async (event) => {
 const getArticle = async (event) => {
   const { id } = event.pathParameters;
 
+  if (!id) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify('Empty Article ID'),
+    };
+  }
+
   const result = await articleController.get(id);
+
+  if (!result) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify('Not Found'),
+    };
+  }
 
   if (typeof (result) === 'string') {
     return {
