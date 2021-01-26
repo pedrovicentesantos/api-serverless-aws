@@ -3,6 +3,13 @@ const articleController = require('./controllers/article');
 const createArticle = async (event) => {
   const article = JSON.parse(event.body);
 
+  if (!article) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify('Empty Body'),
+    };
+  }
+
   const result = await articleController.create(article);
 
   if (typeof (result) === 'string') {

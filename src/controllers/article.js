@@ -7,7 +7,6 @@ const TABLE = 'articles';
 
 const create = async (article) => {
   const id = uuidv4();
-  let error = '';
 
   const newArticle = {
     articleId: id,
@@ -22,15 +21,14 @@ const create = async (article) => {
   try {
     await dynamoDb.put(params).promise();
   } catch (err) {
-    error = `Error on posting article: ${err}`;
+    return `Error on posting article: ${err}`;
   }
 
-  return error || newArticle;
+  return newArticle;
 };
 
 const get = async (articleId) => {
   let response = {};
-  let error = '';
 
   const params = {
     TableName: TABLE,
@@ -42,10 +40,10 @@ const get = async (articleId) => {
   try {
     response = await dynamoDb.get(params).promise();
   } catch (err) {
-    error = `Error on getting article: ${err}`;
+    return `Error on getting article: ${err}`;
   }
 
-  return error || response.Item;
+  return response.Item;
 };
 
 module.exports = { create, get };
