@@ -57,4 +57,21 @@ const getArticle = async (event) => {
   };
 };
 
-module.exports = { createArticle, getArticle };
+// eslint-disable-next-line no-unused-vars
+const getArticles = async (event) => {
+  const result = await articleController.index();
+
+  if (typeof (result) === 'string') {
+    return {
+      statusCode: 400,
+      body: JSON.stringify(result),
+    };
+  }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(result),
+  };
+};
+
+module.exports = { createArticle, getArticle, getArticles };

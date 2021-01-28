@@ -46,4 +46,20 @@ const get = async (articleId) => {
   return response.Item;
 };
 
-module.exports = { create, get };
+const index = async () => {
+  let response = {};
+
+  const params = {
+    TableName: TABLE,
+  };
+
+  try {
+    response = await dynamoDb.scan(params).promise();
+  } catch (err) {
+    return `Error on getting all articles: ${err}`;
+  }
+
+  return response;
+};
+
+module.exports = { create, get, index };

@@ -40,19 +40,26 @@ functions:
     handler: src/handler.createArticle
     events:
       - http:
-          path: /article
+          path: /articles
           method: POST
     
   getArticle:
     handler: src/handler.getArticle
     events:
       - http:
-          path: /article/{id}
+          path: /articles/{id}
           method: GET
           request:
             parameters:
               paths:
                 id: true
+  
+  getArticles:
+    handler: src/handler.getArticles
+    events:
+      - http:
+          path: /articles
+          method: GET
 
 resources:
   Resources:
