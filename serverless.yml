@@ -61,6 +61,17 @@ functions:
           path: /articles
           method: GET
 
+  deleteArticle:
+    handler: src/handler.deleteArticle
+    events:
+      - http:
+          path: /articles/{id}
+          method: DELETE
+          request:
+            parameters:
+              paths:
+                id: true
+
 resources:
   Resources:
     ArticlesDynamoDBTable:

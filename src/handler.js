@@ -35,7 +35,7 @@ const getArticle = async (event) => {
     };
   }
 
-  const result = await articleController.get(id);
+  const result = await articleController.index(id);
 
   if (!result) {
     return {
@@ -59,7 +59,7 @@ const getArticle = async (event) => {
 
 // eslint-disable-next-line no-unused-vars
 const getArticles = async (event) => {
-  const result = await articleController.index();
+  const result = await articleController.show();
 
   if (typeof (result) === 'string') {
     return {
@@ -74,4 +74,40 @@ const getArticles = async (event) => {
   };
 };
 
-module.exports = { createArticle, getArticle, getArticles };
+const deleteArticle = async (event) => {
+  const { id } = event.pathParameters;
+
+  if (!id) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify('Empty Article ID'),
+    };
+  }
+
+  const result = await articleController.destroy(id);
+
+  if (!result) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify('Not Found'),
+    };
+  }
+
+  if (typeof (result) === 'string') {
+    return {
+      statusCode: 400,
+      body: JSON.stringify(result),
+    };
+  }
+
+  return {
+    statusCode: 204,
+  };
+};
+
+module.exports = {
+  createArticle,
+  getArticle,
+  getArticles,
+  deleteArticle,
+};

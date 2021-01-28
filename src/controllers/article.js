@@ -27,7 +27,7 @@ const create = async (article) => {
   return newArticle;
 };
 
-const get = async (articleId) => {
+const index = async (articleId) => {
   let response = {};
 
   const params = {
@@ -46,7 +46,7 @@ const get = async (articleId) => {
   return response.Item;
 };
 
-const index = async () => {
+const show = async () => {
   let response = {};
 
   const params = {
@@ -62,4 +62,27 @@ const index = async () => {
   return response;
 };
 
-module.exports = { create, get, index };
+const destroy = async (articleId) => {
+  let response = {};
+  const params = {
+    TableName: TABLE,
+    Key: {
+      articleId,
+    },
+  };
+
+  try {
+    response = await dynamoDb.delete(params).promise();
+  } catch (err) {
+    return `Error on deleting article: ${err}`;
+  }
+
+  return response;
+};
+
+module.exports = {
+  create,
+  show,
+  index,
+  destroy,
+};
