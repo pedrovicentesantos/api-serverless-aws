@@ -6,23 +6,28 @@ const createArticle = async (event) => {
   if (!article) {
     return {
       statusCode: 400,
-      body: JSON.stringify('Empty Body'),
+      body: JSON.stringify('Empty body'),
     };
   }
 
-  const result = await articleController.create(article);
-
-  if (typeof (result) === 'string') {
+  try {
+    const result = await articleController.create(article);
+    if (typeof (result) === 'string') {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ Error: result }),
+      };
+    }
     return {
-      statusCode: 400,
+      statusCode: 200,
       body: JSON.stringify(result),
     };
+  } catch (err) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ Error: 'Error creating article' }),
+    };
   }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify(result),
-  };
 };
 
 const getArticle = async (event) => {
@@ -31,47 +36,56 @@ const getArticle = async (event) => {
   if (!id) {
     return {
       statusCode: 400,
-      body: JSON.stringify('Empty Article ID'),
+      body: JSON.stringify('Empty article ID'),
     };
   }
 
-  const result = await articleController.index(id);
-
-  if (!result) {
+  try {
+    const result = await articleController.index(id);
+    if (!result) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify('Not Found'),
+      };
+    }
+    if (typeof (result) === 'string') {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ Error: result }),
+      };
+    }
     return {
-      statusCode: 404,
-      body: JSON.stringify('Not Found'),
-    };
-  }
-
-  if (typeof (result) === 'string') {
-    return {
-      statusCode: 400,
+      statusCode: 200,
       body: JSON.stringify(result),
     };
+  } catch (err) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ Error: 'Error getting article' }),
+    };
   }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify(result),
-  };
 };
 
 // eslint-disable-next-line no-unused-vars
 const getArticles = async (event) => {
-  const result = await articleController.show();
-
-  if (typeof (result) === 'string') {
+  try {
+    const result = await articleController.show();
+    if (typeof (result) === 'string') {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ Error: result }),
+      };
+    }
     return {
-      statusCode: 400,
+      statusCode: 200,
       body: JSON.stringify(result),
     };
+  } catch (err) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ Error: 'Error getting articles' }),
+    };
   }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify(result),
-  };
 };
 
 const deleteArticle = async (event) => {
@@ -80,29 +94,73 @@ const deleteArticle = async (event) => {
   if (!id) {
     return {
       statusCode: 400,
-      body: JSON.stringify('Empty Article ID'),
+      body: JSON.stringify('Empty article ID'),
     };
   }
 
-  const result = await articleController.destroy(id);
+  try {
+    const result = await articleController.destroy(id);
 
-  if (!result) {
+    if (!result) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify('Not Found'),
+      };
+    }
+    if (typeof (result) === 'string') {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ Error: result }),
+      };
+    }
     return {
-      statusCode: 404,
-      body: JSON.stringify('Not Found'),
-    };
-  }
-
-  if (typeof (result) === 'string') {
-    return {
-      statusCode: 400,
+      statusCode: 204,
       body: JSON.stringify(result),
     };
+  } catch (err) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ Error: 'Error deleting article' }),
+    };
+  }
+};
+
+const updateArticle = async (event) => {
+  const { id } = event.pathParameters;
+  const data = JSON.parse(event.body);
+
+  if (!data) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify('Empty body'),
+    };
   }
 
-  return {
-    statusCode: 204,
-  };
+  if (!id) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify('Empty article ID'),
+    };
+  }
+
+  try {
+    const result = await articleController.update(id, data);
+    if (typeof (result) === 'string') {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ Error: result }),
+      };
+    }
+    return {
+      statusCode: 200,
+      body: JSON.stringify(result),
+    };
+  } catch (err) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ Error: 'Error updating article' }),
+    };
+  }
 };
 
 module.exports = {
@@ -110,4 +168,5 @@ module.exports = {
   getArticle,
   getArticles,
   deleteArticle,
+  updateArticle,
 };

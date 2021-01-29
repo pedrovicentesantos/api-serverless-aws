@@ -72,6 +72,17 @@ functions:
               paths:
                 id: true
 
+  updateArticle:
+    handler: src/handler.updateArticle
+    events:
+      - http:
+          path: /articles/{id}
+          method: PUT
+          request:
+            parameters:
+              paths:
+                id: true
+
 resources:
   Resources:
     ArticlesDynamoDBTable:

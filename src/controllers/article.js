@@ -1,6 +1,8 @@
 const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require('uuid');
 
+const { getUpdateData } = require('../utils/utils');
+
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const TABLE = 'articles';
@@ -21,7 +23,7 @@ const create = async (article) => {
   try {
     await dynamoDb.put(params).promise();
   } catch (err) {
-    return `Error on posting article: ${err}`;
+    return `Error creating article: ${err}`;
   }
 
   return newArticle;
@@ -40,7 +42,7 @@ const index = async (articleId) => {
   try {
     response = await dynamoDb.get(params).promise();
   } catch (err) {
-    return `Error on getting article: ${err}`;
+    return `Error getting article: ${err}`;
   }
 
   return response.Item;
@@ -56,10 +58,10 @@ const show = async () => {
   try {
     response = await dynamoDb.scan(params).promise();
   } catch (err) {
-    return `Error on getting all articles: ${err}`;
+    return `Error getting all articles: ${err}`;
   }
 
-  return response;
+  return response.Items;
 };
 
 const destroy = async (articleId) => {
@@ -74,7 +76,31 @@ const destroy = async (articleId) => {
   try {
     response = await dynamoDb.delete(params).promise();
   } catch (err) {
-    return `Error on deleting article: ${err}`;
+    return `Error deleting article: ${err}`;
+  }
+
+  return response;
+};
+
+const update = async (articleId, newData) => {
+  let response = {};
+
+  const [updateExpression, attributes] = getUpdateData(newData);
+
+  const params = {
+    TableName: TABLE,
+    Key: {
+      articleId,
+    },
+    UpdateExpression: updateExpression,
+    ExpressionAttributeValues: attributes,
+    ReturnValues: 'UPDATED_NEW',
+  };
+
+  try {
+    response = await dynamoDb.update(params).promise();
+  } catch (err) {
+    return `Error updating article: ${err}`;
   }
 
   return response;
@@ -85,4 +111,5 @@ module.exports = {
   show,
   index,
   destroy,
+  update,
 };
