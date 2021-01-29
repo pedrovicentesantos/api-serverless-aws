@@ -22,6 +22,21 @@ Os serviços da AWS utilizados são:
   * Contém as lambda functions para cada rota da API
 - Banco de Dados DynamoDB
 
+## Endpoints
+
+As rotas presentes na aplicação são:
+
+- GET /dev/articles
+  * Retorna um array com todos os objetos no BD
+- GET /dev/articles/<articleId>
+  * Retorna o artigo identificado por `articleId`
+- POST /dev/articles
+  * Cria um novo artigo
+- PUT /dev/articles/<articleId>
+  * Edita os campos do artigo identificado por `articleId`
+- DELETE /dev/articles/<articleId>
+  * Remove o artigo identificado por `articleId` do BD
+
 ## Fazendo o deploy
 
 Para testar a aplicação é necessário ter uma conta na AWS e um usuário com acesso de admin criado no Identity and Access Management (IAM). Além disso, é necessário ter instalado o framework Serverless, o que pode ser feito com `npm i -g serverless`.
